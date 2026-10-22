@@ -1,0 +1,42 @@
+import * as Tables from './tables.ts'
+
+  // 数字の変換
+  export function convertNumbers(text: string) {
+    const numberNumberRegex = new RegExp(`(⠼${Tables.numbers}+)(⠼${Tables.numbers}+)`, "gu")
+    const numberRegex = new RegExp(`⠼(?:${Tables.downNumbers}|[⠄])*(?:${Tables.numbers}+(?:[⠄⠂⠒]${Tables.numbers}+)*)?`, "gu")
+    const downNumberRegex = new RegExp(`^${Tables.downNumbers}+`, "gu")
+    Tables.numberTable['⠂'] = '.'
+    Tables.numberTable['⠒'] = ':'
+
+    const str = text.replace(numberNumberRegex, "$1、$2")
+    return str.replace(numberRegex, (match) => {
+      const content = match.slice(1)
+      // 下がり数字を漢数字に変換
+      const kansuji = content.replace(downNumberRegex, (match) => {
+        let result = ''
+        for (const char of match) {
+          result += Tables.downNumberTable[char]
+        }
+        return result
+      })
+      
+      // 残る数字と記号を変換
+      let result = "";
+      for (let i = 0; i < kansuji.length; i++) {
+        let char = kansuji[i];
+        if (char === '⠄') { // 3の点の場合
+          if (i === 0) {
+            result += "'" // 数符直後ならアポストロフィー
+          } else if (kansuji.length - i > 3) {
+            result += "," // 途中なら位取り点
+          } else {
+            result += kansuji.slice(i)
+            return result
+          }
+        } else {
+          result += Tables.numberTable[char] !== undefined ? Tables.numberTable[char] : char
+        }
+      }
+      return result;
+    });
+  }
