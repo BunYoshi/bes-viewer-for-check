@@ -1,12 +1,11 @@
 <script setup lang="ts">
-// import { ref, onMounted } from 'vue'
 import bes2unicode from './bes2unicode'
 import { unicode2kana } from './unicode2kana'
 import type { OutputMode, ViewMode } from './types'
 import { switchMode } from './switchMode'
 import { formatText } from './formatText.ts'
 
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import Braille from './Braille.vue'
 import { useI18n } from './i18n'
 
@@ -16,9 +15,19 @@ locale.value = 'ja'
 const openFile = ref(false)
 const str = ref('')
 const fileInput = ref<HTMLInputElement | null>(null)
+const brailleRef = ref<any>(null)
 
 const bes = computed(() => str.value)
 const isFileClosed = computed(() => !openFile.value)
+
+// ファイル読み込み後に自動フォーカス
+const focusViewer = async () => {
+  await nextTick()
+  const el = brailleRef.value?.$el || brailleRef.value
+  if (el instanceof HTMLElement) {
+    el.focus()
+  }
+}
 
 const onFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement
@@ -33,7 +42,7 @@ const onFileChange = (event: Event) => {
   }
 
   const reader = new FileReader()
-  reader.onloadend = (theFile) => {
+  reader.onloadend = async (theFile) => {
     const target = theFile.target as FileReader
     if (target && target.readyState === FileReader.DONE) {
       openFile.value = true
@@ -41,7 +50,7 @@ const onFileChange = (event: Event) => {
       const arr = new Uint8Array(result)
       const unicode = bes2unicode(arr)
       str.value = formatText(unicode, 'hiragana')
-      // str.value = unicode2kana(unicode, {mode: 'hiragana'})
+      await focusViewer() // 追加：読み込み完了時に自動フォーカス
     }
   }
 
@@ -55,20 +64,12 @@ const onFileClose = () => {
 }
 
 const onGetBesUrl = async (url: string) => {
-  // const isBrfUrl = url.toLowerCase().endsWith('.brf')
   try {
     const response = await fetch(url, { method: 'GET' })
-    // isBrf.value = isBrfUrl
-    // if (isBrfUrl) {
-    //   const text = await response.text()
-    //   str.value = brf2unicode(text)
-    // } else {
-      const buf = await response.arrayBuffer()
-      // str.value = formatBrailleText(bes2unicode(new Uint8Array(buf)))
-      str.value = bes2unicode(new Uint8Array(buf))
-      
-    // }
+    const buf = await response.arrayBuffer()
+    str.value = bes2unicode(new Uint8Array(buf))
     openFile.value = true
+    await focusViewer() // 追加：URL読み込み完了時に自動フォーカス
   } catch (error) {
     console.error(error)
   }
@@ -93,106 +94,11 @@ const kanaResult = ref('')     // unicode2kanaの結果
 const preview = ref<HTMLDivElement | null>(null)
 
 const currentMode = ref<OutputMode>('hiragana')
-// function replaceSpace(text: string, mode: ViewMode): string {
-//   return text
-//     .replace(/\u2800/g, (match) => {
-//       if (mode === 'html') {
-//         return '<span class="space">　</span>'
-//       } else {
-//         return '　'
-//       }
-//     })
-// }
-const updateDisplay = () => {
+const updateDisplay = async () => {
   str.value = switchMode(str.value, currentMode.value)
-  // if(preview.value) {
-  //   preview.value.innerHTML = switchMode(preview.value.innerHTML, currentMode.value)
-  // }
+  await focusViewer()
 }
-
-// onMounted(async () => {
-//   try {
-//     statusMessage.value = 'sample.BES を読み込んでいます...'
-    
-//     // 1. 同階層の sample.BES を URL として取得
-//     const fileUrl = new URL('./sample.BES', import.meta.url).href
-//     const response = await fetch(fileUrl)
-    
-//     if (!response.ok) {
-//       throw new Error(`ファイルの取得に失敗しました (status: ${response.status})`)
-//     }
-    
-//     const arrayBuffer = await response.arrayBuffer()
-//     const arr = new Uint8Array(arrayBuffer)
-
-//     // 2. bes2unicode で Unicode点字文字列に変換
-//     const decodedUnicode = bes2unicode(arr)
-//     unicodeBraille.value = decodedUnicode // ★ここでUnicode結果を格納
-
-//     // 3. unicode2kana で仮名変換を実行（今後実装・調整する部分）
-//     const result = unicode2kana(decodedUnicode, { mode: currentMode.value })
-//     kanaResult.value = replaceSpace(result, 'text')
-//     console.log(kanaResult.value);
-//     console.log(preview);
-//     if(preview.value) preview.value.innerHTML = replaceSpace(result, 'html')
-    
-//     statusMessage.value = '変換が完了しました！'
-//   } catch (e: any) {
-//     statusMessage.value = `エラーが発生しました: ${e.message}`
-//   }
-// })
 </script>
-
-<!-- <template>
-  <div style="padding: 20px; font-family: sans-serif;">
-    <h2>点字変換 実験環境</h2>
-    <p>ステータス: <strong>{{ statusMessage }}</strong></p>
-
-    <div class="converter-panel">
-      <fieldset class="mode-selector">
-        <legend>出力モード選択</legend>
-        <label>
-          <input
-            type="radio"
-            v-model="currentMode"
-            value="hiragana"
-            @change="updateDisplay"
-          />
-          ひらがな
-        </label>
-        <label>
-          <input
-            type="radio"
-            v-model="currentMode"
-            value="katakana"
-            @change="updateDisplay"
-          />
-          カタカナ
-        </label>
-      </fieldset>
-    </div>
-
-    <h3>1. bes2unicode の変換結果 (Unicode点字)</h3>
-    <textarea 
-      v-model="unicodeBraille" 
-      rows="6" 
-      style="width: 100%; font-family: monospace;"
-      placeholder="ここにUnicode点字が表示されます"
-    ></textarea>
-
-    <h3>2. unicode2kana の変換結果 (読み仮名)</h3>
-    <textarea 
-      v-model="kanaResult" 
-      rows="6" 
-      style="width: 100%; font-family: monospace;"
-      placeholder="ここに仮名変換結果が表示されます"
-    ></textarea>
-
-    <h3>3. unicode2kana の変換結果 (htmlタグ反映)</h3>
-    <div ref="preview"></div>
-  </div>
-</template> -->
-
 
 <template>
   <div id="app">
@@ -254,7 +160,8 @@ const updateDisplay = () => {
 
     <div class="container is-fluid">
         <main class="section">
-          <Braille :braille="bes"></Braille>
+          <!-- <Braille :braille="bes"></Braille> -->
+          <Braille ref="brailleRef" :braille="bes" tabindex="0" class="braille-viewer-area"></Braille>
         </main>
     </div>
     
@@ -291,5 +198,8 @@ const updateDisplay = () => {
 }
 .footer a {
   text-decoration: underline;
+}
+.braille-viewer-area:focus {
+  outline: none;
 }
 </style>

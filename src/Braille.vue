@@ -5,7 +5,7 @@
       <button type="button" class="button is-small" @click="copyBody">{{ t('copyBody') }}</button>
       <p role="status" aria-live="polite">{{ copyStatus }}</p>
     </div>
-    <article>
+    <article ref="containerRef">
       <section v-for="(page,pno) in bes.body" :key="pno" class="columns page">
         <div class="column yomi">
           <template v-for="(line,lno) in page" :key="lno">
@@ -20,24 +20,31 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-// import * as tenji from 'tenji'
-// OIcon removed; not needed for tests
+import { computed, ref, watch, nextTick } from 'vue'
+import { UnderscoreNavigator } from './search';
 import { splitbraille, type ParsedBraille } from './brailleParser'
-// import { unicode2brf } from '../modules/brf2unicode'
-// import { decodeUEB } from '../modules/uebDecoder'
 import { useI18n } from './i18n'
 
 const { t } = useI18n()
 
 const props = withDefaults(defineProps<{
-  braille?: string
+  braille?: string | ParsedBraille // 親から何が渡されているかに合わせる
 }>(), {
   braille: ''
 })
 
-const isFileClose = computed(() => props.braille.length === 0)
-const bes = computed((): ParsedBraille => splitbraille(props.braille))
+// props.braille が文字列ならパースし、すでにオブジェクトならそのまま扱う
+const bes = computed((): ParsedBraille => {
+  if (typeof props.braille === 'string') {
+    return splitbraille(props.braille)
+  }
+  return props.braille as ParsedBraille
+})
+
+const isFileClose = computed(() => !props.braille || (typeof props.braille === 'string' && props.braille.length === 0))
+
+const containerRef = ref<HTMLElement | null>(null);
+let underscoreNavigator: UnderscoreNavigator | null = null;
 const copyStatus = ref('')
 const convertedText = computed(() => bes.value.body
   .map(page => page.map(line => line === '@HR@' ? '' : tenji2kana(line)).join('\n'))
@@ -54,7 +61,6 @@ async function copyBody() {
     }
     copyStatus.value = t('copySuccess')
   } catch {
-    // Try the legacy route for browsers where the Clipboard API is unavailable or denied.
     try {
       copyStatus.value = copyWithLegacyApi(text) ? t('copySuccess') : t('copyFailure')
     } catch {
@@ -81,12 +87,6 @@ function copyWithLegacyApi(text: string): boolean {
   }
 }
 
-// function toKatakana(value: string): string {
-//   return value.replace(/[\u3041-\u3096\u309D-\u309F]/g, char =>
-//     String.fromCharCode(char.charCodeAt(0) + 0x60)
-//   )
-// }
-
 function tenji2kana(str: string | false): string {
   if (str === false) return ''
   let line = str
@@ -96,6 +96,32 @@ function tenji2kana(str: string | false): string {
 
   return line
 }
+
+// containerRef 自体の変化（DOMのマウント・アンマウント）を直接監視する
+watch(containerRef, (el) => {
+  if (el) {
+    if (!underscoreNavigator) {
+      underscoreNavigator = new UnderscoreNavigator(el);
+    } else {
+      underscoreNavigator.refresh();
+    }
+  } else {
+    underscoreNavigator = null;
+  }
+  // ファイルが閉じられてコンテナが消えた場合、または初期状態で空の場合
+  if (!el || isFileClose.value) {
+    underscoreNavigator = null;
+    return;
+  }  
+});
+
+// ファイルが開いている状態で中身のデータ（bes.value.body）だけが更新されたとき用
+watch(() => bes.value.body, async () => {
+  await nextTick();
+  if (underscoreNavigator && containerRef.value) {
+    underscoreNavigator.refresh();
+  }
+}, { deep: true });
 </script>
 
 <style>
