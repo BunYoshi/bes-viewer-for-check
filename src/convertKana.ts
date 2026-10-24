@@ -42,6 +42,7 @@ export function convertKana(text: string): string {
     .replace(/⠐⠾/g, '◇')
     .replace(/⠰([0-9]+)⠆/gu, '※$1') // 数字入り文中注記符後に「…」を挿入
     .replace(/⠰/g, '、')
+    .replace(/⠤⠤/g, '～')
     .replace(/⠤/g, '_')
     .replace(/⠶/g, '│')
     .replace(createRegex('⠲'), '。')
