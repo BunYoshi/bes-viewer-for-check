@@ -2,7 +2,7 @@
 
 点字データ（.bes形式）を仮名に変換してブラウザに表示するツールです。
 
-[このページから利用できます](https://BunYoshi.github.io/bes2kana-for-reader/)
+[このページから利用できます](https://bunyoshi.github.io/bes-viewer-for-check/)
 
 第１カギや第１カッコ、点訳挿入符のような、開き記号と閉じ記号が同一の囲み記号をスムーズに確認することができます。
 
