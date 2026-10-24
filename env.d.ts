@@ -26,4 +26,5 @@ declare module '*.besx' {
   export default src
 }
 
-declare module '*.min.css'
+declare module 'bulma/css/bulma.css' {}
+declare module '*.css' {}
