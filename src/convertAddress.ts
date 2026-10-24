@@ -1,5 +1,5 @@
-import * as Types from './types.ts'
-import * as Tables from './tables.ts'
+import * as Types from './types'
+import * as Tables from './tables'
 
 // アドレス囲み符号内の記号変換
   function convertAddressSymbol(text: string) {

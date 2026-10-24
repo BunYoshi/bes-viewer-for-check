@@ -1,4 +1,4 @@
-import * as Tables from './tables.ts'
+import * as Tables from './tables'
 
   // 数字の変換
   export function convertNumbers(text: string) {

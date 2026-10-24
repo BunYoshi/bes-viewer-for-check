@@ -1,6 +1,6 @@
-import * as Types from './types.ts'
-import * as Tables from './tables.ts'
-import { convertHatsuon } from './convertHatsuon.ts'
+import * as Types from './types'
+import * as Tables from './tables'
+import { convertHatsuon } from './convertHatsuon'
 
   // 外国語引用符内の記号変換
   function convertEnglishSymbol(text: string) {

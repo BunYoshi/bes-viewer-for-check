@@ -1,5 +1,5 @@
-import * as Tables from './tables.ts'
-import { convertHatsuon } from './convertHatsuon.ts'
+import * as Tables from './tables'
+import { convertHatsuon } from './convertHatsuon'
 
   // 外字符の処理
   export function convertAlphabets(text: string) {

@@ -1,4 +1,4 @@
-import * as Types from './types.ts'
+import * as Types from './types'
 
 export function switchMode(text: string, mode: Types.OutputMode): string {
         let result = ''

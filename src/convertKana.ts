@@ -1,4 +1,4 @@
-import * as Tables from './tables.ts'
+import * as Tables from './tables'
 
 
 export function convertKana(text: string): string {

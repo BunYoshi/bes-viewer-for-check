@@ -1,10 +1,10 @@
-import * as Types from './types.ts'
-import { convertAddress } from './convertAddress.ts'
-import { convertEnglish } from './convertEnglish.ts'
-import { convertAlphabets } from './convertAlphabets.ts'
-import { convertNumbers } from './convertNumbers.ts'
-import { convertKana } from './convertKana.ts'
-import { switchMode } from './switchMode.ts'
+import * as Types from './types'
+import { convertAddress } from './convertAddress'
+import { convertEnglish } from './convertEnglish'
+import { convertAlphabets } from './convertAlphabets'
+import { convertNumbers } from './convertNumbers'
+import { convertKana } from './convertKana'
+import { switchMode } from './switchMode'
 
 export function unicode2kana(brailleText: string, options: Types.EngineOptions): string {
 

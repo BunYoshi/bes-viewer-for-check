@@ -3,7 +3,7 @@ import bes2unicode from './bes2unicode'
 import { unicode2kana } from './unicode2kana'
 import type { OutputMode, ViewMode } from './types'
 import { switchMode } from './switchMode'
-import { formatText } from './formatText.ts'
+import { formatText } from './formatText'
 
 import { ref, computed, onMounted, nextTick } from 'vue'
 import Braille from './Braille.vue'

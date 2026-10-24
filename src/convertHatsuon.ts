@@ -7,7 +7,8 @@ export function convertHatsuon(text: string): string {
     let converted = text
     for (const key of sortedKeys) {
         const value = hatsuonTable[key]
-        converted = converted.replaceAll(key, value)
+        // converted = converted.replaceAll(key, value)
+        converted = converted.split(key).join(value)
     }
     let result = ''
     for (let i = 0; i < converted.length; i++) {
