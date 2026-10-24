@@ -33,15 +33,7 @@ export class UnderscoreNavigator {
     this.refresh();
   }
 
-//   public refresh() {
-//     const { fullText } = this.buildTextContext();
-//     this.underscoreRange = this.findNextPairInText(fullText, 0, '_');
-//     this.boxRange = this.findNextPairInText(fullText, 0, '│');
-
-//     this.updateHighlights();
-//   }
   public refresh() {
-    // 読み込み直後はハイライトを出さないようにクリアする
     this.underscoreRange = null;
     this.boxRange = null;
 
@@ -79,7 +71,7 @@ export class UnderscoreNavigator {
     window.addEventListener('keydown', (e) => {
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) return;
 
-      if (e.shiftKey && !e.ctrlKey) {
+      if (e.shiftKey && !(e.ctrlKey || e.metaKey)) {
         if (e.key === 'ArrowDown') {
           e.preventDefault();
           this.moveNextPair('_');
@@ -95,7 +87,7 @@ export class UnderscoreNavigator {
         }
       }
 
-      if (e.shiftKey && e.ctrlKey) {
+      if (e.shiftKey && (e.ctrlKey || e.metaKey)) {
         if (e.key === 'ArrowDown') {
           e.preventDefault();
           this.moveNextPair('│');
@@ -211,8 +203,6 @@ export class UnderscoreNavigator {
     return null;
   }
 
-  // --- オンデマンド検索（│の場合は 1個または2連続 │{1,2} を許容する） ---
-
   private findNextPairInText(fullText: string, startIndex: number, type: '_' | '│'): { start: number, end: number } | null {
     // typeが │ のときは │{1,2} （1文字または2文字連続）を境界として扱う
     let regex: RegExp;
@@ -260,20 +250,6 @@ export class UnderscoreNavigator {
 
   // --- 上下キー移動 ---
 
-//   private moveNextPair(type: '_' | '│') {
-//     const currentRange = type === '_' ? this.underscoreRange : this.boxRange;
-//     const { fullText } = this.buildTextContext();
-
-//     const searchStartIndex = currentRange ? currentRange.end + 1 : 0;
-//     const nextPair = this.findNextPairInText(fullText, searchStartIndex, type);
-
-//     if (nextPair) {
-//       if (type === '_') this.underscoreRange = nextPair;
-//       else this.boxRange = nextPair;
-//       this.updateHighlights();
-//       this.scrollToCurrent(type);
-//     }
-//   }
   private moveNextPair(type: '_' | '│') {
     const currentRange = type === '_' ? this.underscoreRange : this.boxRange;
     const { fullText } = this.buildTextContext();
