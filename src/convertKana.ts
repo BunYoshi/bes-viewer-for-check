@@ -3,14 +3,14 @@ import * as Tables from './tables'
 
 export function convertKana(text: string): string {
 
-  const endSymbols = "[\\u2800|\\u2816|_|？|@|…|=|：|】|”|’|＞|』|｝|\\)|\\||※|＊|、|。|・|⠢|│]"
+  const endSymbols = "[\\u2800|\\u2816|_|？|@|…|=|：|】|”|’|＞|』|｝|\\)|\\||※|☆|、|。|・|⠢|│]"
   function createRegex(prefix: string) {
     return new RegExp(`${prefix}(?=${endSymbols}|$)`, "gu")
   }
 
   const convertedSymbols = text
     .replace(/\u2800\u2800⠔⠔\u2800/g, '\u2800\u2800☆\u2800')
-    .replace(/\u2800\u2800⠢⠢\u2800/g, '\u2800\u2800★\u2800')
+    .replace(/\u2800\u2800⠢⠢\u2800/g, '\u2800\u2800☆☆\u2800')
     .replace(/⠸⠸\u2800\u2800/g, '\/\/＿')
     .replace(/⠸\u2800\u2800/g, '\/＿')
     .replace(/⠪⠒⠒⠕/g, '⇔')
@@ -46,7 +46,7 @@ export function convertKana(text: string): string {
     .replace(/⠤/g, '_')
     .replace(/⠶/g, '│')
     .replace(createRegex('⠲'), '。')
-    .replace(createRegex('⠠⠢'), '＊')
+    .replace(createRegex('⠠⠢'), '☆☆☆')
     .replace(createRegex('⠢'), '？')
     .replace(/⠐\u2800/g, '・\u2800')
     .replace(createRegex('⠖'), '！')

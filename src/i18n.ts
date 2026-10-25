@@ -4,7 +4,7 @@ export type Locale = 'ja' | 'en'
 
 const messages = {
   ja: {
-    title: 'BES Viewer for Check',
+    title: 'BES Viewer for 点訳校正',
     selectFile: 'ファイル',
     closeFile: 'ファイルを閉じる',
     copyBody: '本文をクリップボードにコピー',
@@ -19,7 +19,7 @@ const messages = {
     backToTocBraille: '⠾⠩⠐⠳⠯⠀⠾⠐⠞⠙'
   },
   en: {
-    title: 'BES Viewer for Check',
+    title: 'BES Viewer for Checking',
     selectFile: 'File',
     closeFile: 'Close File',
     copyBody: 'Copy text to clipboard',

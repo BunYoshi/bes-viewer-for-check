@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/bes-viewer-for-check/',
+  base: '/bes2kana-for-checking/',
   plugins: [
     vue(),
     // 👇 追加するブロック
@@ -13,5 +13,9 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/LICENSE\.txt$/]
       }
     })
-  ],  assetsInclude: ['**/*.BES', '**/*.bes', '**/*.BESX', '**/*.besx']
+  ],
+  build: {
+    cssMinify: 'esbuild'
+  },
+  assetsInclude: ['**/*.BES', '**/*.bes', '**/*.BESX', '**/*.besx']
 })
