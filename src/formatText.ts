@@ -291,7 +291,6 @@ export function formatText(unicode: string, mode: OutputMode): string {
     indentDiff = undefined
 
     // 上記の結合条件に当てはまらない場合（新しい段落の開始など）
-    // if (spaceCount >= 4 && spaceCount < 10) {
     if (spaceCount >= 4) {
       if (inBlockCount > 0) {
         if (result[result.length - 1] !== '') {

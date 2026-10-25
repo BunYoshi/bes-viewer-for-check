@@ -160,7 +160,6 @@ const updateDisplay = async () => {
 
     <div class="container is-fluid">
         <main class="section">
-          <!-- <Braille :braille="bes"></Braille> -->
           <Braille ref="brailleRef" :braille="bes" tabindex="0" class="braille-viewer-area"></Braille>
         </main>
     </div>
@@ -168,14 +167,14 @@ const updateDisplay = async () => {
     <footer class="footer">
       <div class="content has-text-centered">
         <p>&copy; 2026 BunYoshi | 
-          <a href="https://github.com/bunyoshi/bes2kana-for-reader" target="_blank" rel="noopener noreferrer">Source Code (GitHub)</a>
+          <a href="https://github.com/bunyoshi/bes2kana-for-checking" target="_blank" rel="noopener noreferrer">Source Code (GitHub)</a>
         </p>
         <p style="font-size: 13px; margin-top: 5px;">
             Based on: <a href="https://github.com/brlat/brlat.github.io/" target="_blank" rel="noopener">.bes点字データをカタカナに変換</a> by 1983hachigoro (@brlat)<br>
             Original: <a href="https://github.com/shunito/bes-viewer" target="_blank" rel="noopener">UniBraille Viewer α</a> by Shunsuke Ito (@shunito)
         </p>
         <p style="font-size: 12px; margin-top: 3px;">
-            Licensed under the <a href="https://raw.githubusercontent.com/bunyoshi/bes2kana-for-reader/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+            Licensed under the <a href="https://raw.githubusercontent.com/bunyoshi/bes2kana-for-checking/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
         </p>
       </div>
     </footer>

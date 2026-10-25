@@ -1,3 +1,5 @@
+import { log } from "node:console";
+
 interface Position {
   node: Node;
   offset: number;
@@ -84,6 +86,12 @@ export class UnderscoreNavigator {
         } else if (e.key === 'ArrowLeft') {
           e.preventDefault();
           this.shrinkMarker('_');
+        } else if (e.code === 'Quote') {
+          e.preventDefault();
+          this.moveHalfNextPair('_');
+        } else if (e.code === 'BracketLeft') {
+          e.preventDefault();
+          this.moveHalfPrevPair('_');
         }
       }
 
@@ -100,6 +108,12 @@ export class UnderscoreNavigator {
         } else if (e.key === 'ArrowLeft') {
           e.preventDefault();
           this.shrinkMarker('│');
+        } else if (e.code === 'Quote') {
+          e.preventDefault();
+          this.moveHalfNextPair('│');
+        } else if (e.code === 'BracketLeft') {
+          e.preventDefault();
+          this.moveHalfPrevPair('│');
         }
       }
     });
@@ -287,6 +301,113 @@ export class UnderscoreNavigator {
       this.scrollToCurrent(type);
     }
   }
+  
+  // --- 上下半ステップ移動 ---
+  private moveHalfNextPair(type: '_' | '│') {
+    const currentRange = type === '_' ? this.underscoreRange : this.boxRange;
+    if (!currentRange) return;
+
+    const { fullText } = this.buildTextContext();
+
+    if (type === '_') {
+      let markerStart, markerEnd
+      for (let i = currentRange.start + 1; i <= currentRange.end; i++) {
+        if (fullText[i] === '_') {
+          markerStart = i
+          break;
+        }
+      }
+      for (let i = currentRange.end + 1; i < fullText.length; i++) {
+        if (fullText[i] === '_') {
+          markerEnd = i
+          break;
+        }
+      }
+      if(markerStart && markerEnd) {
+        const newRange = { start: markerStart, end: markerEnd };
+        this.underscoreRange = newRange;
+        this.updateHighlights();
+        this.scrollToCurrent(type);
+      }
+    } else {
+      let markerStart, markerEnd
+      for (let i = currentRange.start + 1; i <= currentRange.end; i++) {
+        if (fullText[i] === '│' && i !== currentRange.start + 1) {
+          markerStart = i
+          break;
+        }
+      }
+      for (let i = currentRange.end + 1; i < fullText.length; i++) {
+        if (fullText[i] === '│') {
+          if (fullText[i + 1] !== '│') {
+            markerEnd = i
+          } else {
+            markerEnd = i + 1
+          }
+          break;
+        }
+      }
+      if (markerStart && markerEnd) {
+        const newRange = { start: markerStart, end: markerEnd };
+        this.boxRange = newRange;
+        this.updateHighlights();
+        this.scrollToCurrent(type);
+      }
+    }
+  }
+
+  private moveHalfPrevPair(type: '_' | '│') {
+    const currentRange = type === '_' ? this.underscoreRange : this.boxRange;
+    if (!currentRange) return;
+
+    const { fullText } = this.buildTextContext();
+
+    if (type === '_') {
+      let markerStart, markerEnd
+      for (let i = currentRange.start - 1; i >= 0; i--) {
+        if (fullText[i] === '_') {
+          markerStart = i
+          break;
+        }
+      }
+      for (let i = currentRange.end - 1; i >= currentRange.start; i--) {
+        if (fullText[i] === '_') {
+          markerEnd = i
+          break;
+        }
+      }
+      if(markerStart && markerEnd) {
+        const newRange = { start: markerStart, end: markerEnd };
+        this.underscoreRange = newRange;
+        this.updateHighlights();
+        this.scrollToCurrent(type);
+      }
+    } else {
+      let markerStart, markerEnd
+      for (let i = currentRange.start - 1; i >= 0; i--) {
+        if (fullText[i] === '│') {
+          if (fullText[i - 1] !== '│') {
+            markerStart = i
+          } else {
+            markerStart = i - 1
+          }
+          break;
+        }
+      }
+      for (let i = currentRange.end - 1; i >= currentRange.start; i--) {
+        if (fullText[i] === '│' && i !== currentRange.end - 1) {
+          markerEnd = i
+          break;
+        }
+      }
+      if (markerStart && markerEnd) {
+        const newRange = { start: markerStart, end: markerEnd };
+        this.boxRange = newRange;
+        this.updateHighlights();
+        this.scrollToCurrent(type);
+      }
+    }
+  }
 
   // --- 左右キー伸縮（│の場合は連続する │塊 を1つのマーカーとして扱う） ---
 
@@ -302,28 +423,27 @@ export class UnderscoreNavigator {
           const newRange = { start: currentRange.start, end: i };
           this.underscoreRange = newRange;
           this.updateHighlights();
+          this.scrollToCurrent(type);
           break;
         }
       }
     } else {
-      // │ の場合：連続する │ の塊の「先頭位置」を次のマーカーとして捉える
-      let i = currentRange.end + 1;
-      while (i < fullText.length) {
+      let markerEnd
+      for (let i = currentRange.end + 1; i < fullText.length; i++) {
         if (fullText[i] === '│') {
-          // この塊の先頭位置を特定
-          const markerStart = i;
-          // 塊の終端まで進める
-          while (i < fullText.length && fullText[i] === '│') {
-            i++;
+          if (fullText[i + 1] !== '│') {
+            markerEnd = i
+          } else {
+            markerEnd = i + 1
           }
-          const markerEnd = i - 1; // 塊の最後の │ の位置
-
-          const newRange = { start: currentRange.start, end: markerEnd };
-          this.boxRange = newRange;
-          this.updateHighlights();
           break;
         }
-        i++;
+      }
+      if (markerEnd) {
+        const newRange = { start: currentRange.start, end: markerEnd };
+        this.boxRange = newRange;
+        this.updateHighlights();
+        this.scrollToCurrent(type);
       }
     }
   }
@@ -344,29 +464,21 @@ export class UnderscoreNavigator {
       if (lastFoundIdx !== -1) {
         this.underscoreRange = { start: currentRange.start, end: lastFoundIdx };
         this.updateHighlights();
+        this.scrollToCurrent(type);
       }
     } else {
-      // │ の場合：現在の終端より前にある、直前の「│の塊」の終端位置を探す
-      // まず、現在の範囲内にあるすべての │ 塊の位置を洗い出す
-      const markerEnds: number[] = [];
-      let i = currentRange.start + 1;
-      while (i < currentRange.end) {
-        if (fullText[i] === '│') {
-          const blockStart = i;
-          while (i < currentRange.end && fullText[i] === '│') {
-            i++;
-          }
-          const blockEnd = i - 1;
-          markerEnds.push(blockEnd);
-        } else {
-          i++;
+      let markerEnd
+      for (let i = currentRange.end - 1; i >= currentRange.start; i--) {
+        if (fullText[i] === '│' && i !== currentRange.end - 1) {
+          markerEnd = i
+          break;
         }
       }
-
-      if (markerEnds.length > 0) {
-        const prevMarkerEnd = markerEnds[markerEnds.length - 1];
-        this.boxRange = { start: currentRange.start, end: prevMarkerEnd };
+      if (markerEnd) {
+        const newRange = { start: currentRange.start, end: markerEnd };
+        this.boxRange = newRange;
         this.updateHighlights();
+        this.scrollToCurrent(type);
       }
     }
   }
