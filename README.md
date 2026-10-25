@@ -1,4 +1,4 @@
-# BES Viewer for Screen Reader
+# BES Viewer for 点訳校正
 
 点字データ（.bes/.besx形式）を仮名に変換してブラウザに表示するツールです。
 
