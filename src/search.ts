@@ -95,7 +95,7 @@ export class UnderscoreNavigator {
         }
       }
 
-      if (e.shiftKey && (e.ctrlKey || e.metaKey)) {
+      if (!e.shiftKey && (e.ctrlKey || e.metaKey)) {
         if (e.key === 'ArrowDown') {
           e.preventDefault();
           this.moveNextPair('│');
@@ -283,7 +283,7 @@ export class UnderscoreNavigator {
       if (type === '_') this.underscoreRange = nextPair;
       else this.boxRange = nextPair;
       this.updateHighlights();
-      this.scrollToCurrent(type);
+      this.scrollToCurrent(type, 'start');
     }
   }
 
@@ -298,7 +298,7 @@ export class UnderscoreNavigator {
       if (type === '_') this.underscoreRange = prevPair;
       else this.boxRange = prevPair;
       this.updateHighlights();
-      this.scrollToCurrent(type);
+      this.scrollToCurrent(type, 'start');
     }
   }
   
@@ -327,7 +327,7 @@ export class UnderscoreNavigator {
         const newRange = { start: markerStart, end: markerEnd };
         this.underscoreRange = newRange;
         this.updateHighlights();
-        this.scrollToCurrent(type);
+        this.scrollToCurrent(type, 'start');
       }
     } else {
       let markerStart, markerEnd
@@ -351,7 +351,7 @@ export class UnderscoreNavigator {
         const newRange = { start: markerStart, end: markerEnd };
         this.boxRange = newRange;
         this.updateHighlights();
-        this.scrollToCurrent(type);
+        this.scrollToCurrent(type, 'start');
       }
     }
   }
@@ -380,7 +380,7 @@ export class UnderscoreNavigator {
         const newRange = { start: markerStart, end: markerEnd };
         this.underscoreRange = newRange;
         this.updateHighlights();
-        this.scrollToCurrent(type);
+        this.scrollToCurrent(type, 'start');
       }
     } else {
       let markerStart, markerEnd
@@ -404,7 +404,7 @@ export class UnderscoreNavigator {
         const newRange = { start: markerStart, end: markerEnd };
         this.boxRange = newRange;
         this.updateHighlights();
-        this.scrollToCurrent(type);
+        this.scrollToCurrent(type, 'start');
       }
     }
   }
@@ -423,7 +423,7 @@ export class UnderscoreNavigator {
           const newRange = { start: currentRange.start, end: i };
           this.underscoreRange = newRange;
           this.updateHighlights();
-          this.scrollToCurrent(type);
+          this.scrollToCurrent(type, 'end');
           break;
         }
       }
@@ -443,7 +443,7 @@ export class UnderscoreNavigator {
         const newRange = { start: currentRange.start, end: markerEnd };
         this.boxRange = newRange;
         this.updateHighlights();
-        this.scrollToCurrent(type);
+        this.scrollToCurrent(type, 'end');
       }
     }
   }
@@ -464,21 +464,30 @@ export class UnderscoreNavigator {
       if (lastFoundIdx !== -1) {
         this.underscoreRange = { start: currentRange.start, end: lastFoundIdx };
         this.updateHighlights();
-        this.scrollToCurrent(type);
+        this.scrollToCurrent(type, 'end');
       }
     } else {
       let markerEnd
-      for (let i = currentRange.end - 1; i >= currentRange.start; i--) {
+      for (let i = currentRange.end - 1; i > currentRange.start; i--) {
         if (fullText[i] === '│' && i !== currentRange.end - 1) {
           markerEnd = i
           break;
         }
       }
+      let hasContent = false
       if (markerEnd) {
-        const newRange = { start: currentRange.start, end: markerEnd };
-        this.boxRange = newRange;
-        this.updateHighlights();
-        this.scrollToCurrent(type);
+        for (let i = currentRange.start; i <= markerEnd ; i++) {
+          if (fullText[i] !== '│') {
+            hasContent = true
+            break
+          }
+        }
+        if (hasContent) {
+          const newRange = { start: currentRange.start, end: markerEnd };
+          this.boxRange = newRange;
+          this.updateHighlights();
+          this.scrollToCurrent(type, 'end');
+        }
       }
     }
   }
@@ -523,12 +532,17 @@ export class UnderscoreNavigator {
     }
   }
 
-  private scrollToCurrent(type: '_' | '│') {
+  private scrollToCurrent(type: '_' | '│', point: string) {
     const range = type === '_' ? this.underscoreRange : this.boxRange;
     if (!range) return;
 
     const { nodeMaps } = this.buildTextContext();
-    const startPos = this.resolvePosition(range.start, nodeMaps);
+    let startPos
+    if (point === 'start') {
+      startPos = this.resolvePosition(range.start, nodeMaps);
+    } else {
+      startPos = this.resolvePosition(range.end, nodeMaps);
+    }
 
     if (startPos && startPos.node.parentElement) {
       startPos.node.parentElement.scrollIntoView({
