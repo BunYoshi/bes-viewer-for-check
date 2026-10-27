@@ -125,31 +125,36 @@ const updateDisplay = async () => {
             <div class="navbar-item">
               <button class="button is-small is-light" id="closeFile" :disabled="isFileClosed" @click="onFileClose">{{ t('closeFile') }}</button>
             </div>
-          <div class="navbar-item" v-if="!isFileClosed">
-            <fieldset class="field is-grouped">
-              <div class="is-flex">
-                <legend class="has-text-white mr-4">出力モード選択</legend>
-                <label class="radio has-text-white mr-3">
-                  <input
-                    type="radio"
-                    v-model="currentMode"
-                    value="hiragana"
-                    @change="updateDisplay"
-                  />
-                  ひらがな
-                </label>
-                <label class="radio has-text-white">
-                  <input
-                    type="radio"
-                    v-model="currentMode"
-                    value="katakana"
-                    @change="updateDisplay"
-                  />
-                  カタカナ
-                </label>
-              </div>
-            </fieldset>
-          </div>
+            <div class="navbar-item" v-if="!isFileClosed">
+              <fieldset class="field is-grouped">
+                <div class="is-flex">
+                  <legend class="has-text-white mr-4">出力モード選択</legend>
+                  <label class="radio has-text-white mr-3">
+                    <input
+                      type="radio"
+                      v-model="currentMode"
+                      value="hiragana"
+                      @change="updateDisplay"
+                    />
+                    ひらがな
+                  </label>
+                  <label class="radio has-text-white">
+                    <input
+                      type="radio"
+                      v-model="currentMode"
+                      value="katakana"
+                      @change="updateDisplay"
+                    />
+                    カタカナ
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+            <div class="navbar-item">
+              <a href="./manual.html" target="_brank" class="button is-small is-light">
+                操作マニュアルを見る
+              </a>
+            </div>
           </div>
           <div class="navbar-end">
             <p class="navbar-item"><hr></p>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon.png">
+    <link rel="apple-touch-icon" href="./icon.png">
+    <title>操作マニュアル│BES Viewer for 点訳校正</title>
+    <style>
+        body {
+            margin: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 2rem;
+        }
+        ul li::before {
+            content: "・";
+            margin-right: 8px;
+        }
+        li {
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+        .yellow {
+            background-color: #ffeb3b;
+            color: #000;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        .light-blue {
+            background-color: #81d4fa;
+            color: #000;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        img {
+            border: solid 1px #eee;
+        }
+        h1 {
+            padding-left: 1rem;
+            color: rgb(46 51 61);
+            font-weight: normal;
+        }
+        h2 {
+            padding-left: 1rem;
+            /* background-color: rgb(249 248 243);
+            color: rgb(46 51 61); */
+            color: rgb(249 248 243);
+            background-color: rgb(46 51 61);
+            font-weight: normal;
+            line-height: 2;
+        }
+        h2:not(:first-of-type) {
+            margin-top: 2rem;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .change {
+            display: inline-block;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+        .arrow {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .right {
+            display: grid;
+            place-items: center;
+            height: 40px;
+            width: 200px;
+            background:
+                linear-gradient(-33.7deg, white 11%, transparent 12%),
+                linear-gradient(33.7deg, transparent 88%, white 89%),
+                linear-gradient(90deg, transparent 85%, #ddd 85%),
+                linear-gradient(0deg, white 20%, #ddd 20%, #ddd 80%, white 80%);
+        }
+        .left {
+            display: grid;
+            place-items: center;
+            height: 40px;
+            width: 200px;
+            background:
+                linear-gradient(33.7deg, white 11%, transparent 12%),
+                linear-gradient(-33.7deg, transparent 88%, white 89%),
+                linear-gradient(90deg, #ddd 15%, transparent 15%),
+                linear-gradient(0deg, white 20%, #ddd 20%, #ddd 80%, white 80%);
+        }
+    </style>
+</head>
+<body>
+    <h1>操作マニュアル│BES Viewer for 点訳校正</h1>
+    <h2>マーカーの色について</h2>
+    <ul>
+        <li><span class="yellow">黄色</span>：　第１カギ／第１つなぎ符で囲まれた範囲</li>
+        <li><span class="light-blue">水色</span>：　第１カッコ／点訳挿入符／第１段落挿入符で囲まれた範囲</li>
+    </ul>
+    
+    <h2>マーカーとキーの対応</h2>
+    <ul>
+        <li><span class="yellow">カギ（黄色）</span>：　<span class="bold">Shift</span> + 矢印キーなど</li>
+        <li><span class="light-blue">カッコ（水色）</span>：　<span class="bold">Ctrl</span> + 矢印キーなど</li>
+    </ul>
+
+    <h2>マーカーの初回表示</h2>
+    <ul>
+        <li><span class="bold">Shift</span>または<span class="bold">Ctrl</span>を押しながら下向き矢印キー（ ↓ ）を押すと、各色のマーカーが表示されます。</li>
+        <li>テキスト内の任意の位置でクリックすると、クリックした位置付近に<span class="yellow">黄色</span>・<span class="light-blue">水色</span>両方のマーカーが表示されます。</li>
+    </ul>
+
+    <h2>マーカーの移動方法</h2>
+    <ul>
+        <li>
+            <span class="bold">Shift</span>/
+            <span class="bold">Ctrl</span> + 上下矢印（ ↑ / ↓ ）　・・・　前後へ移動
+        </li>
+        <div class="container">
+            <img
+            src="./img/manual_a1.png"
+            alt="「（第１カギ開き）ありがとー（第１カギ閉じ）（第１カギ開き）どー　いたしまして（第１カギ閉じ）」のうち、「（第１カギ開き）ありがとー（第１カギ閉じ）」にマーカー"
+            >
+            <div class="change">
+                <p class="right arrow">下矢印（ ↓ ）</p>
+                <p class="left arrow">上矢印（ ↑ ）</p>
+            </div>
+            <img
+            src="./img/manual_a2.png"
+            alt="「（第１カギ開き）ありがとー（第１カギ閉じ）（第１カギ開き）どー　いたしまして（第１カギ閉じ）」のうち、「（第１カギ開き）どー　いたしまして（第１カギ閉じ）」にマーカー"
+            >
+        </div>
+        <li>
+            <span class="bold">Shift</span>/
+            <span class="bold">Ctrl</span> + 左右矢印（ ← / → ）　・・・　マーカーの末尾を拡張／縮小
+        </li>
+        <div class="container">
+            <img
+            src="./img/manual_b1.png"
+            alt="「（第１カギ開き）ここに⠀100（つなぎ符）えんだまが⠀あります（第１カギ閉じ）」のうち、「（第１カギ開き）ここに⠀100（つなぎ符）」にマーカー"
+            >
+            <div class="change">
+                <p class="right arrow">右矢印（ → ）</p>
+                <p class="left arrow">左矢印（ ← ）</p>
+            </div>
+            <img
+            src="./img/manual_b2.png"
+            alt="「（第１カギ開き）ここに⠀100（つなぎ符）えんだまが⠀あります（第１カギ閉じ）」の全体にマーカー"
+            >
+        </div>
+        <li>
+            <span class="bold">Shift</span>/
+            <span class="bold">Ctrl</span> + 「け(:)」　・・・　マーカーの終端を先端とする範囲に移動
+        </li>
+        <li>
+            <span class="bold">Shift</span>/
+            <span class="bold">Ctrl</span> + 「＠」　・・・　マーカーの先端を終端とする範囲に移動
+        </li>
+        <div class="container">
+            <img
+            src="./img/manual_c1.png"
+            alt="「A（つなぎ符）こ⠀さんが⠀（第１カギ開き）ありがとー（第１カギ閉じ）と⠀いった。」のうち、「（つなぎ符）こ⠀さんが⠀（第１カギ開き）」にマーカー"
+            >
+            <div class="change">
+                <p class="right arrow">け(:)</p>
+                <p class="left arrow">＠</p>
+            </div>
+            <img
+            src="./img/manual_c2.png"
+            alt="「A（つなぎ符）こ⠀さんが⠀（第１カギ開き）ありがとー（第１カギ閉じ）と⠀いった。」のうち、「（第１カギ開き）ありがとー（第１カギ閉じ）」にマーカー"
+            >
+        </div>
+    </ul>
+    
+    <h2>囲み記号が抜けている場合の表示例</h2>
+    <ul>
+        <li>開き記号が抜けた場合　・・・　カギの外側にマーカーがつく</li>
+        <div class="container">
+            <img
+            src="./img/manual_error1.png"
+            alt="「ありがとー」（改行）「どー　いたしまして」のうち、「ありがとー」の開き記号が抜けている場合。
+            「ありがとー」の閉じ記号から「どー　いたしまして」の開き記号まで、カギの外側にマーカーがつく。"
+            >
+        </div>
+        <li>閉じ記号が抜けた場合　・・・　次のカギの開き記号までマーカーが延長される</li>
+        <div class="container">
+            <img
+            src="./img/manual_error2.png"
+            alt="「ありがとー」（改行）「どー　いたしまして」のうち、「ありがとー」の閉じ記号が抜けている場合。
+            「ありがとー」の開き記号から「どー　いたしまして」の開き記号まで、マーカーが延長される。"
+            >
+        </div>
+    </ul>
+</body>
+</html>

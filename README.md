@@ -1,6 +1,6 @@
 # BES Viewer for 点訳校正
 
-点字データ（.bes/.besx形式）を仮名に変換してブラウザに表示するツールです。
+点字データ（.bes/.besx形式）を、ひらがな・カタカナに変換してブラウザに表示するツールです。
 
 [このページから利用できます](https://bunyoshi.github.io/bes2kana-for-checking/)
 

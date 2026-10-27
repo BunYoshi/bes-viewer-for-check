@@ -6,9 +6,9 @@ export default defineConfig({
   base: '/bes2kana-for-checking/',
   plugins: [
     vue(),
-    // 👇 追加するブロック
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['manual.html', 'LICENSE.txt'],
       workbox: {
         navigateFallbackDenylist: [/^\/LICENSE\.txt$/]
       }
