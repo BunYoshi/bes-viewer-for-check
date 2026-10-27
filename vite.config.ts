@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['manual.html', 'LICENSE.txt'],
       workbox: {
-        navigateFallbackDenylist: [/^\/LICENSE\.txt$/]
+        navigateFallbackDenylist: [/\/LICENSE\.txt$/]
       }
     })
   ],
