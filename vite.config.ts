@@ -8,7 +8,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: 'manual.html',
+      includeAssets: ['manual.html', 'img/*.png'],
       workbox: {
         navigateFallbackDenylist: [/^\/LICENSE\.txt$/]
       }
