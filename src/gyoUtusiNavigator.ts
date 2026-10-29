@@ -7,8 +7,9 @@ export class GyoUtusiNavigator {
   private rootElement: HTMLElement;
   private targets: GyoUtusiTarget[] = [];
   private currentIndex: number = -1;
-
-  constructor(rootElement: unknown) {
+  private underscoreNavigator: any = null; // ★ 追加：連携用の保持変数
+  
+  constructor(rootElement: unknown, underscoreNavigator?: any) {
     let targetNode: any = rootElement;
     if (targetNode && typeof targetNode === 'object' && '$el' in targetNode && targetNode.$el) {
       targetNode = targetNode.$el;
@@ -18,6 +19,7 @@ export class GyoUtusiNavigator {
     }
 
     this.rootElement = targetNode as HTMLElement;
+    this.underscoreNavigator = underscoreNavigator || null;
     this.initStyles();
     this.initListeners();
     this.refresh();
@@ -167,6 +169,8 @@ export class GyoUtusiNavigator {
   }
 
   private updateActiveState(direction: number) {
+    if (this.targets.length === 0) return;
+
     // 以前のアクティブクラスを外す
     if (this.currentIndex >= 0 && this.currentIndex < this.targets.length) {
       this.targets[this.currentIndex].element.classList.remove('is-active');
@@ -182,5 +186,10 @@ export class GyoUtusiNavigator {
       behavior: 'smooth',
       block: 'center'
     });
+
+    // UnderscoreNavigator のハイライトとフォーカスポジションをリセット！
+    if (this.underscoreNavigator && typeof this.underscoreNavigator.clearHighlights === 'function') {
+      this.underscoreNavigator.clearHighlights();
+    }
   }
 }

@@ -5,6 +5,7 @@ import type { OutputMode, ViewMode } from './types'
 import { switchMode } from './switchMode'
 import { formatText } from './formatText'
 import { GyoUtusiNavigator } from './gyoUtusiNavigator'
+import { UnderscoreNavigator } from './search'
 
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import Braille from './Braille.vue'
@@ -17,7 +18,8 @@ const openFile = ref(false)
 const str = ref('')
 const fileInput = ref<HTMLInputElement | null>(null)
 const brailleRef = ref<any>(null)
-let gyoUtusiNavigator: GyoUtusiNavigator | null = null // ★ 追加
+let underscoreNavigator: UnderscoreNavigator | null = null
+let gyoUtusiNavigator: GyoUtusiNavigator | null = null
 
 const bes = computed(() => str.value)
 const isFileClosed = computed(() => !openFile.value)
@@ -91,16 +93,36 @@ onMounted(() => {
 // ★ 追加：テキスト（str）が更新されたりファイルが閉じられたタイミングで自動制御
 watch(str, async (newVal) => {
   await nextTick() // DOMの描画完了を確実に待つ
-  if (newVal) {
-    if (!gyoUtusiNavigator && brailleRef.value) {
-      // まだインスタンスがなければ、Braille要素をターゲットにして生成
-      gyoUtusiNavigator = new GyoUtusiNavigator(brailleRef.value)
+  // if (newVal) {
+  //   if (!gyoUtusiNavigator && brailleRef.value) {
+  //     // まだインスタンスがなければ、Braille要素をターゲットにして生成
+  //     gyoUtusiNavigator = new GyoUtusiNavigator(brailleRef.value)
+  //   } else {
+  //     // すでに生成されていれば再スキャン（リフレッシュ）
+  //     gyoUtusiNavigator?.refresh()
+  //   }
+  // } else {
+  //   // ファイルを閉じてテキストが空になったときもリフレッシュしてハイライトをクリア
+  //   gyoUtusiNavigator?.refresh()
+  // }
+
+  if (newVal && brailleRef.value) {
+    // 1. UnderscoreNavigator の初期化 または リフレッシュ
+    if (!underscoreNavigator) {
+      underscoreNavigator = new UnderscoreNavigator(brailleRef.value)
     } else {
-      // すでに生成されていれば再スキャン（リフレッシュ）
-      gyoUtusiNavigator?.refresh()
+      underscoreNavigator.refresh()
+    }
+
+    // 2. GyoUtusiNavigator の初期化（underscoreNavigator を引数として渡す！） または リフレッシュ
+    if (!gyoUtusiNavigator) {
+      gyoUtusiNavigator = new GyoUtusiNavigator(brailleRef.value, underscoreNavigator)
+    } else {
+      gyoUtusiNavigator.refresh()
     }
   } else {
-    // ファイルを閉じてテキストが空になったときもリフレッシュしてハイライトをクリア
+    // ファイルを閉じてテキストが空になったとき
+    underscoreNavigator?.refresh()
     gyoUtusiNavigator?.refresh()
   }
 })

@@ -38,8 +38,19 @@ export class UnderscoreNavigator {
   public refresh() {
     this.underscoreRange = null;
     this.boxRange = null;
-
     this.updateHighlights();
+  }
+
+  // ★ 追加：外部から呼び出して黄色・水色のハイライトと位置を完全にリセットするパブリックメソッド
+  public clearHighlights() {
+    this.underscoreRange = null;
+    this.boxRange = null;
+    
+    // CSS Highlights からも消去する
+    if (CSS.highlights) {
+      CSS.highlights.delete(this.underscoreHighlightName);
+      CSS.highlights.delete(this.boxHighlightName);
+    }
   }
 
   private initStyles() {
