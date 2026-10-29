@@ -35,6 +35,12 @@
             padding-left: 5px;
             padding-right: 5px;
         }
+        .red {
+            background-color: #ffe6e6;
+            color: red;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
         img {
             border: solid 1px #eee;
         }
@@ -104,18 +110,22 @@
     <ul>
         <li><span class="yellow">黄色</span>：　第１カギ／第１つなぎ符で囲まれた範囲</li>
         <li><span class="light-blue">水色</span>：　第１カッコ／点訳挿入符／第１段落挿入符で囲まれた範囲</li>
+        <li><span class="red">赤色</span>：　行移し箇所（前後１文字）</li>
     </ul>
     
     <h2>マーカーとキーの対応</h2>
     <ul>
         <li><span class="yellow">カギ（黄色）</span>：　<span class="bold">Shift</span> + 矢印キーなど</li>
         <li><span class="light-blue">カッコ（水色）</span>：　<span class="bold">Ctrl</span>（Macでは<span class="bold">Command[⌘]</span>） + 矢印キーなど</li>
+        <li><span class="red">行移し（赤色）</span>：　<span class="bold">Shift</span> + <span class="bold">Ctrl</span>（Macでは<span class="bold">Command[⌘]</span>） + 上下矢印キー</li>
     </ul>
 
     <h2>マーカーの初回表示</h2>
     <ul>
         <li><span class="bold">Shift</span>または<span class="bold">Ctrl</span>を押しながら下向き矢印キー（ ↓ ）を押すと、各色のマーカーが表示されます。</li>
-        <li>テキスト内の任意の位置でクリックすると、クリックした位置付近に<span class="yellow">黄色</span>・<span class="light-blue">水色</span>両方のマーカーが表示されます。</li>
+        <li>テキストの途中から検索を始めたいときは、希望の開始位置でクリックしてください。
+            クリック位置の近くに<span class="yellow">黄色</span>・<span class="light-blue">水色</span>両方のマーカーが表示されます。</li>
+        <li>マーカーが近くに見つからない場合は、ShiftまたはCtrlキーと矢印キーを押してマーカーを移動させることで、画面がマーカーのあるところまでスクロールします。</li>
     </ul>
 
     <h2>マーカーの移動方法</h2>

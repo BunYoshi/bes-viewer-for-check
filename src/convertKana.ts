@@ -75,21 +75,21 @@ export function convertKana(text: string): string {
   result = result.replace(prefixRegex, (match, prefix, baseChar) => {
     switch (prefix) {
       case '⠈':
-        return Tables.youonTable[baseChar] ?? baseChar
+        return Tables.youonTable[baseChar] ?? match
       case '⠐':
-        return toDakuon(baseChar)
+        return toDakuon(baseChar) ?? match
       case '⠠':
-        return String.fromCharCode(baseChar.charCodeAt(0) + 2)
+        return String.fromCharCode(baseChar.charCodeAt(0) + 2) ?? match
       case '⠘':
         return Tables.youon45Table[baseChar] ?? toDakuon(toYouon(baseChar)[0]) + toYouon(baseChar)[1]
       case '⠨':
-        return Tables.youon46Table[baseChar] ?? baseChar
+        return Tables.youon46Table[baseChar] ?? match
       case '⠸':
-        return Tables.youon456Table[baseChar] ?? baseChar
+        return Tables.youon456Table[baseChar] ?? match
       case '⠢':
-        return Tables.youon26Table[baseChar] ?? baseChar
+        return Tables.youon26Table[baseChar] ?? match
       case '⠲':
-        const str = Tables.youon26Table[baseChar] ?? baseChar
+        const str = Tables.youon26Table[baseChar] ?? match
         return str
           .replace(/く/, 'ぐ')
           .replace(/ふ/, 'ゔ')

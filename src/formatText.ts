@@ -247,7 +247,11 @@ export function formatText(unicode: string, mode: OutputMode): string {
 
     // 結合条件1: 次の行の行頭に \u2800 がない場合（改行削除してそのまま連結）
     if (spaceCount === 0) {
-      result[result.length - 1] = prevLine + line
+      if (/\u2800$/.test(prevLine)) {
+        result[result.length - 1] = prevLine + line
+      } else {
+        result[result.length - 1] = prevLine + '移' + line
+      }
       indentDiff = undefined
       continue
     }

@@ -12,7 +12,7 @@ export function unicode2kana(brailleText: string, options: Types.EngineOptions):
   result = convertEnglish(result)
   result = convertAlphabets(result)
   result = convertNumbers(result)
-  result = convertKana(result)
+  result = convertKana(result)  
   result = switchMode(result, options.mode)
 
   return result

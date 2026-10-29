@@ -4,8 +4,9 @@ import { unicode2kana } from './unicode2kana'
 import type { OutputMode, ViewMode } from './types'
 import { switchMode } from './switchMode'
 import { formatText } from './formatText'
+import { GyoUtusiNavigator } from './gyoUtusiNavigator'
 
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import Braille from './Braille.vue'
 import { useI18n } from './i18n'
 
@@ -16,6 +17,7 @@ const openFile = ref(false)
 const str = ref('')
 const fileInput = ref<HTMLInputElement | null>(null)
 const brailleRef = ref<any>(null)
+let gyoUtusiNavigator: GyoUtusiNavigator | null = null // ★ 追加
 
 const bes = computed(() => str.value)
 const isFileClosed = computed(() => !openFile.value)
@@ -86,6 +88,22 @@ onMounted(() => {
   }
 })
 
+// ★ 追加：テキスト（str）が更新されたりファイルが閉じられたタイミングで自動制御
+watch(str, async (newVal) => {
+  await nextTick() // DOMの描画完了を確実に待つ
+  if (newVal) {
+    if (!gyoUtusiNavigator && brailleRef.value) {
+      // まだインスタンスがなければ、Braille要素をターゲットにして生成
+      gyoUtusiNavigator = new GyoUtusiNavigator(brailleRef.value)
+    } else {
+      // すでに生成されていれば再スキャン（リフレッシュ）
+      gyoUtusiNavigator?.refresh()
+    }
+  } else {
+    // ファイルを閉じてテキストが空になったときもリフレッシュしてハイライトをクリア
+    gyoUtusiNavigator?.refresh()
+  }
+})
 
 // 画面表示用の変数
 const statusMessage = ref('初期化中...')
